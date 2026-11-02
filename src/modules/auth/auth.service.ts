@@ -30,7 +30,7 @@ export const loginService = async(email: string, password: string) =>{
         id: user.id,
         code: user.code,
         email: user.email,
-        rol: user.role_name,
+        role: user.role_name,
         schemaName: user.schema_name,
         companyId: user.company_id,
     };
@@ -66,7 +66,7 @@ export const refreshTokenService = async(refreshToken: string) =>{
         id: user.id,
         code: user.code,
         email: user.email,
-        rol: user.role_name, 
+        role: user.role_name,
         schemaName:  decoded['schemaName'],
         companyId: decoded['companyId'],
     };
