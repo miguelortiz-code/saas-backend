@@ -41,7 +41,7 @@ export const getMe = async (
 ): Promise <void> => {
     try {
         const result = await getMeService(req.user!.id, req.user!.schemaName);
-        sendCreated(res, result);
+        sendSuccess(res, result);
     } catch (error) {
         next(error);
     }
