@@ -3,7 +3,7 @@ import  {Request} from 'express';
 // Usuario autenticado extraído del JWT
 export interface AuthUser {
     id: number;
-    uuid: string;
+    code: string;
     email: string;
     role: string;
     schemaName: string;  // schema del tenant: "tenant_ferreteria_lopez"
