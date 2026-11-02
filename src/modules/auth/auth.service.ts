@@ -17,12 +17,12 @@ export const loginService = async(email: string, password: string) =>{
     // Buscar usurio por email
     const user = await findUserByEmail(email);
     // Si no exite usuario, mostrar error
-    if(!user) throw new AppError(`Credenciales incorrectas, ${401}`);
+    if(!user) throw new AppError('Credenciales incorrectas', 401);
 
     // comparar la contraseña
     const passwordMatch = await bcrypt.compare(password, user.password);
     // Si no es la contraseña, mostrar error
-    if(!passwordMatch) throw new AppError(`Credenciales incorrectas, ${401}`);
+    if(!passwordMatch) throw new AppError('Credenciales incorrectas', 401);
 
     // Payload que viaja dentro del JWT
 
@@ -55,12 +55,12 @@ export const refreshTokenService = async(refreshToken: string) =>{
     try {
         decoded = jwt.verify(refreshToken, ENV.JWT.REFRESH_SECRET) as jwt.JwtPayload;
     } catch {
-        throw new  AppError(`Refresh token inválido o expirado, ${401}` );
+        throw new AppError('Refresh token inválido o expirado', 401);
     }
     
     // Verifica que el usuario siga existiendo y activo
     const user = await findUserById(decoded['id'], decoded['schemaName']);
-    if(!user) throw new AppError(`Usuario no encontrado, ${401}`);
+    if(!user) throw new AppError('Usuario no encontrado', 401);
 
     const payload = {
         id: user.id,
@@ -79,7 +79,7 @@ export const refreshTokenService = async(refreshToken: string) =>{
 // Me — retorna el perfil del usuario autenticado
 export const getMeService = async (id: number, schemaName: string) =>{
     const user = await findUserById(id, schemaName);
-    if(!user) throw new AppError(`Usuario no encontrado, ${401}`);
+    if(!user) throw new AppError('Usuario no encontrado', 401);
 
     return {
         code:       user.code,
