@@ -21,9 +21,15 @@ export const errorHandler = (
   _next: NextFunction
 ): void => {
   const statusCode = (err as AppError).statusCode || 500;
-  const message    = err.message || 'Error interno del servidor';
+  // Los AppError traen mensajes pensados para el cliente.
+  // Los demás errores (PostgreSQL, bcrypt, etc.) pueden revelar schemas o tablas,
+  // así que en producción se reemplazan por un mensaje genérico.
+  const message = err instanceof AppError || !ENV.IS_PROD
+    ? err.message || 'Error interno del servidor'
+    : statusCode >= 500 ? 'Error interno del servidor' : 'Solicitud inválida';
 
-  logger.error(`[${req.method}] ${req.path} → ${statusCode}: ${message}`);
+// El log siempre guarda el error real, aunque el cliente vea el genérico
+logger.error(`[${req.method}] ${req.path} → ${statusCode}: ${err.message}`);
 
   if (!ENV.IS_PROD) console.error(err.stack);
 
