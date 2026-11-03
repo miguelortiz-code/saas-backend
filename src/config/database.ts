@@ -35,8 +35,14 @@ export const tenantQuery = async (
 ) =>{
     const client = await pool.connect();
     try {
-        await client.query(`SET search_path TO ${schemaName}, public`);
-        return await client.query(text, params);
+        await client.query('BEGIN');
+        await client.query(`SET LOCAL search_path TO ${schemaName}, public`);
+        const result = await client.query(text, params);
+        await client.query('COMMIT');
+        return result;
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
     } finally {
         client.release();
     }
@@ -50,13 +56,13 @@ export const tenantTransaction = async (
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        await client.query(`SET search_path TO ${schemaName}, public`);
+        await client.query(`SET LOCAL search_path TO ${schemaName}, public`);
         await callback(client);
         await client.query('COMMIT');
     } catch (error) {
         await client.query('ROLLBACK');
         throw error;
-    }finally{
+    } finally {
         client.release();
     }
 };
