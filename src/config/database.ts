@@ -1,7 +1,6 @@
 import pg from 'pg';
 import { ENV } from './env.js';
 import logger from './logger.js';
-import { error } from 'node:console';
 
 const {Pool} = pg;
 
@@ -18,10 +17,10 @@ const pool = new Pool({
 });
 
 // Si la BD falla inesperadamente, lo registramos
-pool.on('error', (err) =>{
-    logger.error(`Error inesperado en el pool de PosgreSQL: ${error}`);
-    process.exit(-1);
-});
+   pool.on('error', (err) => {
+       logger.error(`Error inesperado en el pool de PostgreSQL: ${err.message}`);
+       process.exit(-1);
+   });
 
 // Query simple — para tablas del schema public
 export const query = (text:string, params?: unknown[]) =>
