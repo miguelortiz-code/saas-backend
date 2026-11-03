@@ -30,7 +30,7 @@ export const sendError = (
 export const sendCreated = <T>(res: Response, data: T, message = 'Creado exitosamente') =>
     sendSuccess(res, data, message, 201);
 
-export const sendNotFound = (res: Response, message = 'Recusro no encontrado') =>
+export const sendNotFound = (res: Response, message = 'Recurso no encontrado') =>
     sendError(res, message, 404);
 
 export const sendUnauthorized = (res: Response, message = 'No autorizado') =>
