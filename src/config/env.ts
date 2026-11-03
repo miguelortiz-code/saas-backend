@@ -1,6 +1,17 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Si falta una variable obligatoria, el servidor no arranca y dice cuál falta
+const required = (name: string): string => {
+  const value =  process.env[name];
+  if(!value){
+    throw new Error(`Falta la variable de entorno ${name} en el archivo .env`);
+  }
+  return value;
+};
+
+
+
 export const ENV = {
   NODE_ENV:  process.env.NODE_ENV  || 'development',
   PORT:      Number(process.env.PORT) || 3000,
@@ -15,9 +26,9 @@ export const ENV = {
   },
 
   JWT: {
-    SECRET:          process.env.JWT_SECRET          || '',
+    SECRET:          required('JWT_SECRET'),
     EXPIRES_IN:      process.env.JWT_EXPIRES_IN      || '15m',
-    REFRESH_SECRET:  process.env.JWT_REFRESH_SECRET  || '',
+    REFRESH_SECRET:  required('JWT_REFRESH_SECRET'),
     REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   },
 
