@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "../../shared/types/index.js";
-import { sendSuccess, sendCreated } from "../../shared/helpers/response.helper.js";
+import { sendSuccess} from "../../shared/helpers/response.helper.js";
 import { loginService, refreshTokenService, getMeService } from "./auth.service.js";
 
 // POST - /api/v1/auth/login
@@ -12,7 +12,7 @@ export const login = async(
     try {
         const {email, password} = req.body;
         const result = await loginService(email, password);
-        sendCreated(res, result, 'Inicio de sesión exitoso');
+        sendSuccess(res, result, 'Inicio de sesión exitoso');
     } catch (error) {
         next(error);
     }
@@ -27,7 +27,7 @@ export const refreshToken = async (
     try {
         const {refreshToken} = req.body;
         const result =  await refreshTokenService(refreshToken);
-        sendCreated(res, result, 'Token renovado');
+        sendSuccess(res, result, 'Token renovado');
     } catch (error) {
         next(error);
     }
