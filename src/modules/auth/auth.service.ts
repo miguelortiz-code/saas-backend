@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ENV } from "../../config/env.js";
 import { AppError } from "../../middleware/error.middleware.js";
-import { findUserByEmail, findUserById } from "./auth.queries.js";
+import { findUserByEmail, findUserById, findCompanyById } from "./auth.queries.js";
 
 // Genera el access token (15 minutos)
 const generateAccessToken = (payload: object): string =>
@@ -72,7 +72,10 @@ export const refreshTokenService = async (refreshToken: string) => {
     throw new AppError("Refresh token inválido o expirado", 401);
   }
 
-  // Verifica que el usuario siga existiendo y activo
+  // Verifica que la empresa y el usuario siga existiendo y activo  
+  const company = await findCompanyById(decoded["companyId"]);
+  if(!company) throw new AppError("Empresa inactiva", 401);
+  
   const user = await findUserById(decoded["id"], decoded["schemaName"]);
   if (!user) throw new AppError("Usuario no encontrado", 401);
 

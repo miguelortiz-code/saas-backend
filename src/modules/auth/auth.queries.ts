@@ -25,8 +25,10 @@ export const findUserByEmail = async (email: string) => {
          $3::varchar   AS schema_name
        FROM users u
        JOIN roles r ON r.id = u.id_rol
+       JOIN states s ON s.id = u.id_state
        WHERE u.email = $1
          AND u.deleted_at IS NULL
+         AND s.name = 'Activo'
        LIMIT 1`,
       [email, company.id, company.schema_name]
     );
@@ -52,9 +54,23 @@ export const findUserById = async (id: number, schemaName: string) => {
        r.name AS role_name
      FROM users u
      JOIN roles r ON r.id = u.id_rol
+     JOIN states s ON s.id = u.id_state
      WHERE u.id = $1
-       AND u.deleted_at IS NULL`,
+       AND u.deleted_at IS NULL
+       AND s.name = 'Activo'`,
     [id]
+  );
+
+  return result.rows[0] || null;
+};
+
+// Buscar una empresa por su ID
+export const findCompanyById = async(id: number) => {
+  const result = await query(
+    `SELECT id
+     FROM public.companies
+     WHERE is_active = true AND deleted_at IS NULL  AND id = $1`,
+     [id]
   );
 
   return result.rows[0] || null;
